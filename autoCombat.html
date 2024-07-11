@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AutoCombat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            padding: 50px;
+        }
+        h1 {
+            color: #333;
+        }
+        label {
+            font-size: 18px;
+            margin-top: 20px;
+            display: block;
+            color: #555;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            width: 80%;
+            max-width: 300px;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AutoCombat</h1>
+        <label for="pokemon-dropdown">Player 1: Choose a Pokémon:</label>
+        <select id="pokemon-dropdown"></select>
+        <label for="pokemon-dropdown2">Player 2: Choose a Pokémon:</label>
+        <select id="pokemon-dropdown2"></select>
+    </div>
+    <div class="button-container">
+        <button onclick="startCombat()">Start</button>
+    </div>
+    <script src="pokemonlist.js"></script>
+    <script>
+        function startCombat() {
+            const selectedPokemon1 = document.getElementById('pokemon-dropdown').value;
+            const selectedPokemon2 = document.getElementById('pokemon-dropdown2').value;
+            // Redirect to combat page with selected Pokemons
+            window.location.href = `/matchAuto?pokemon1=${selectedPokemon1}&pokemon2=${selectedPokemon2}`;
+        }
+    </script>
+</body>
+</html>

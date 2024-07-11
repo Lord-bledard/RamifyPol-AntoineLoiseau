@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokemon Battle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .battle-container {
+            max-width: 800px;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+        }
+        .battle-screen {
+            width: 100%;
+            height: 400px;
+            background-color: #77dd77;
+            position: relative;
+            border: 1px solid #333;
+        }
+        .pokemon {
+            position: absolute;
+            width: 150px;
+        }
+        .pokemon.player {
+            bottom: 20px;
+            left: 20px;
+        }
+        .pokemon.opponent {
+            top: 20px;
+            right: 20px;
+        }
+        .pokemon-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+        .info-box {
+            flex: 1;
+            margin: 0 10px;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .info-box h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .attack-buttons {
+            margin-top: 20px;
+        }
+        .attack-button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .attack-button2 {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: none;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .attack-button:hover {
+            background-color: #45a049;
+        }
+        .attack-info {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        .home-button {
+            display: none;
+            background-color: #f44336;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            font-size: 16px;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+        .home-button:hover {
+            background-color: #e53935;
+        }
+    </style>
+</head>
+<body>
+    <div class="battle-container">
+        <div class="battle-screen">
+            <img src="" class="pokemon player" id="player-pokemon" alt="Player's Pokemon">
+            <img src="" class="pokemon opponent" id="opponent-pokemon" alt="Opponent's Pokemon">
+        </div>
+        <div class="pokemon-info">
+            <div class="info-box" id="player-info">
+                <h3 id="player-name">Player's Pokemon</h3>
+                <p id="player-hp">HP: 100</p>
+                <p class="attack-info" id="player-attack-info"></p>
+            </div>
+            <div class="info-box" id="opponent-info">
+                <h3 id="opponent-name">Opponent's Pokemon</h3>
+                <p id="opponent-hp">HP: 100</p>
+                <p class="attack-info" id="opponent-attack-info"></p>
+            </div>
+        </div>
+        <div class="attack-buttons">
+            <!-- Player's attack buttons -->
+            <button class="attack-button player-attack-button" onclick="attack('player', 0)">Attack 1</button>
+            <button class="attack-button player-attack-button" onclick="attack('player', 1)">Attack 2</button>
+            <button class="attack-button player-attack-button" onclick="attack('player', 2)">Attack 3</button>
+            <button class="attack-button player-attack-button" onclick="attack('player', 3)">Attack 4</button>
+            <button class="attack-button2 opponent-attack-button" onclick="attack('opponent', 0)">Attack 1</button>
+            <button class="attack-button2 opponent-attack-button" onclick="attack('opponent', 1)">Attack 2</button>
+            <button class="attack-button2 opponent-attack-button" onclick="attack('opponent', 2)">Attack 3</button>
+            <button class="attack-button2 opponent-attack-button" onclick="attack('opponent', 3)">Attack 4</button>
+        </div>
+    </div>
+    <button class="home-button" id="home-button" onclick="location.href='/'">Go to Home</button>
+    <script src="initAttack.js"></script>
+    <audio id="battle-music" src="Batlle.flac" controls></audio>
+    <script src="pokemonInfo.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+    // Récupérer les noms des Pokémon à partir des paramètres d'URL
+    const battleMusic = document.getElementById('battle-music');
+    battleMusic.play();
+    const urlParams = new URLSearchParams(window.location.search);
+    const playerPokemon = urlParams.get('pokemon1');
+    const opponentPokemon = urlParams.get('pokemon2');
+
+    // Vérifier si les noms des Pokémon sont présents dans les paramètres d'URL
+    if (playerPokemon && opponentPokemon) {
+        // Mettre à jour les noms et les images des Pokémon
+        document.getElementById('player-name').innerText = playerPokemon.charAt(0).toUpperCase() + playerPokemon.slice(1);
+        document.getElementById('opponent-name').innerText = opponentPokemon.charAt(0).toUpperCase() + opponentPokemon.slice(1);
+        document.getElementById('player-pokemon').src = `https://img.pokemondb.net/sprites/black-white/anim/normal/${playerPokemon.toLowerCase()}.gif`;
+        document.getElementById('opponent-pokemon').src = `https://img.pokemondb.net/sprites/black-white/anim/normal/${opponentPokemon.toLowerCase()}.gif`;
+
+        // Initialiser les attaques du Pokémon joueur
+        fetchPokemonAttacks(playerPokemon, 'player');
+        
+        // Initialiser les attaques du Pokémon opposant
+        fetchPokemonAttacks(opponentPokemon, 'opponent');
+    } else {
+        console.error("Les noms des Pokémon sont manquants dans les paramètres d'URL.");
+    }
+        });
+
+        // Function to handle the attack
+        function attack(type, index) {
+    const attackButton = document.querySelectorAll(`.${type}-attack-button`)[index];
+    const moveName = attackButton.innerText;
+    const power = parseInt(attackButton.getAttribute('data-power'));
+    const accuracy = parseInt(attackButton.getAttribute('data-accuracy'));
+    const playerHP = document.getElementById('player-hp');
+    const opponentHP = document.getElementById('opponent-hp');
+    const playerAttackInfo = document.getElementById('player-attack-info');
+    const opponentAttackInfo = document.getElementById('opponent-attack-info');
+
+    if (type === 'player') {
+        playerAttackInfo.innerText = `Player used ${moveName}`;
+        performAttack('player', power, accuracy, playerHP, opponentHP, playerAttackInfo, opponentAttackInfo);
+        setTimeout(() => {
+            console.log(parseInt(playerHP.innerText.split(': ')[1]))
+            console.log(parseInt(opponentHP.innerText.split(': ')[1]))
+            if (parseInt(playerHP.innerText.split(': ')[1]) !=  0 && parseInt(opponentHP.innerText.split(': ')[1]) != 0)
+                enemyAttack();
+        }, 1000); // Délai avant l'attaque de l'opposant
+    }
+}
+
+        // Function to simulate opponent's attack
+    function enemyAttack() {
+        const attackButtons = document.querySelectorAll('.opponent-attack-button');
+        const randomAttackIndex = Math.floor(Math.random() * attackButtons.length);
+        const attackButton = attackButtons[randomAttackIndex];
+        const moveName = attackButton.innerText;
+        const power = parseInt(attackButton.getAttribute('data-power'));
+        const accuracy = parseInt(attackButton.getAttribute('data-accuracy'));
+        const playerHP = document.getElementById('player-hp');
+        const opponentHP = document.getElementById('opponent-hp');
+        const playerAttackInfo = document.getElementById('player-attack-info');
+        const opponentAttackInfo = document.getElementById('opponent-attack-info');
+
+    opponentAttackInfo.innerText = `Opponent used ${moveName}`;
+    performAttack('opponent', power, accuracy, playerHP, opponentHP, playerAttackInfo, opponentAttackInfo);
+}
+
+        // Function to handle attack logic
+function performAttack(attackerType, power, accuracy, playerHP, opponentHP, playerAttackInfo, opponentAttackInfo) {
+    console.log(power)
+    if (power == 0)
+        power = 15;
+    if (power.toString() == "NaN")
+{
+        power = 10;
+        console.log(power)
+}
+    console.log("test")
+    if (Math.random() * 100 < accuracy) {
+        let damage = Math.floor((Math.random() * (power / 2)) + (power / 3) / 2);
+        if (attackerType === 'player') {
+            let opponentHPValue = parseInt(opponentHP.innerText.split(': ')[1]);
+            opponentHPValue -= damage;
+            if (opponentHPValue < 0) opponentHPValue = 0;
+            opponentHP.innerText = `HP: ${opponentHPValue}`;
+
+            if (opponentHPValue === 0) {
+                alert("You won!");
+                const battleMusic = document.getElementById('battle-music');
+                battleMusic.pause();
+                battleMusic.currentTime = 0;
+                document.getElementById('home-button').style.display = 'inline-block';
+                return;
+            }
+        } else if (attackerType === 'opponent') {
+            let playerHPValue = parseInt(playerHP.innerText.split(': ')[1]);
+            playerHPValue -= damage;
+            if (playerHPValue < 0) playerHPValue = 0;
+            playerHP.innerText = `HP: ${playerHPValue}`;
+
+            if (playerHPValue === 0) {
+                alert("You lost!");
+                const battleMusic = document.getElementById('battle-music');
+                battleMusic.pause();
+                battleMusic.currentTime = 0;
+                document.getElementById('home-button').style.display = 'inline-block';
+                return;
+            }
+        }
+    } else {
+        if (attackerType === 'player') {
+            playerAttackInfo.innerText = `Player's attack missed!`;
+        } else if (attackerType === 'opponent') {
+            opponentAttackInfo.innerText = `Opponent's attack missed!`;
+        }
+    }
+}
+
+    </script>
+</body>
+</html>
